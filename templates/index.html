@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask CRUD - Students</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* ===== Base Page Styling ===== */
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: "Poppins", sans-serif;
+            color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .navbar-brand {
+            color: #00d4ff !important;
+            font-weight: 600;
+            letter-spacing: 0.6px;
+        }
+
+        /* ===== Cards ===== */
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            color: #e4e6eb;
+        }
+
+        /* ===== Form ===== */
+        .form-control {
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: #cfd2d6;
+        }
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.3);
+        }
+
+        /* ===== Buttons ===== */
+        .btn-success {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border: none;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border-radius: 10px;
+            transition: 0.2s ease-in-out;
+        }
+        .btn-success:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+
+        .btn-outline-primary {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        .btn-outline-primary:hover {
+            background-color: #00d4ff;
+            color: #fff;
+        }
+
+        .btn-outline-danger {
+            border-color: #ff4b5c;
+            color: #ff4b5c;
+        }
+        .btn-outline-danger:hover {
+            background-color: #ff4b5c;
+            color: #fff;
+        }
+
+        /* ===== Tables ===== */
+        table {
+            color: #e4e6eb;
+        }
+        table th {
+            background: rgba(0, 212, 255, 0.15);
+            color: #00d4ff;
+            font-weight: 600;
+            border-top: none;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .table-striped tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== Page Headers ===== */
+        h1, h4 {
+            color: #00e0ff;
+        }
+
+        /* ===== Utility ===== */
+        .text-muted {
+            color: #b8babc !important;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">🎓 Student Management</a>
+    </div>
+</nav>
+
+<div class="container my-5">
+
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Flask CRUD Application</h1>
+        <p class="text-muted">Manage student records efficiently</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card p-4 mb-5">
+        <h4 class="text-center mb-4">Add a New Student</h4>
+
+        <form action="/add" method="POST">
+            <div class="row g-3 align-items-center">
+                <div class="col-md">
+                    <input class="form-control" name="fname" placeholder="First Name" required>
+                </div>
+                <div class="col-md">
+                    <input class="form-control" name="lname" placeholder="Last Name" required>
+                </div>
+                <div class="col-md">
+                    <input class="form-control" name="email" placeholder="Email" required>
+                </div>
+                <div class="col-md">
+                    <input class="form-control" name="phone" placeholder="Phone" required>
+                </div>
+                <div class="col-md">
+                    <input class="form-control" name="city" placeholder="City" required>
+                </div>
+                <div class="col-md-auto">
+                    <button class="btn btn-success px-4">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card p-4">
+        <h4 class="text-center mb-4">All Students</h4>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle text-center">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.sno }}</td>
+                        <td>{{ student.fname }}</td>
+                        <td>{{ student.lname }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.phone }}</td>
+                        <td>{{ student.city }}</td>
+                        <td>
+                            <a href="/update/{{ student.sno }}" class="btn btn-sm btn-outline-primary">✏️ Update</a>
+                            <a href="/delete/{{ student.sno }}" class="btn btn-sm btn-outline-danger">🗑 Delete</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
