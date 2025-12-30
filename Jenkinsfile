@@ -12,27 +12,27 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'python -m venv venv'
-                sh 'venv/bin/pip install -r requirements.txt'
+                bat 'python -m venv venv'
+                bat 'venv\\Scripts\\pip install -r requirements.txt'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                sh 'venv/bin/pytest'
+                bat 'venv\\Scripts\\pytest'
             }
         }
 
         stage('Build Application') {
             steps {
-                echo 'Building Flask Application'
+                echo 'Build stage completed (Flask app does not require compilation)'
             }
         }
 
         stage('Deploy Application') {
             steps {
-                sh 'venv/bin/python app.py &'
-                echo 'Application Deployed Successfully'
+                bat 'venv\\Scripts\\python app.py'
+                echo 'Flask application deployed successfully'
             }
         }
     }
